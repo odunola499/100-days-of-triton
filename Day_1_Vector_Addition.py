@@ -34,5 +34,18 @@ def vector_addition(a:torch.tensor, b:torch.tensor):
     k2 = kernel_vector_addition[grid](a,b,output_buffer, num_elems, block_size)
     return output_buffer
 
+if __name__ =="__main__":
+    torch.manual_seed(2020) #seed both cpu and gpu
+    vec_size = 8192
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    a = torch.rand(vec_size, device = device)
+    b = torch.rand(vec_size, device = device)
+
+    torch_res = a+b
+    triton_res = vector_addition(a,b)
+    score = torch.allclose(torch_res, triton_res) #check if the results are the same
+    print(score)
+
+
 
 
